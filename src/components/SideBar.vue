@@ -1,0 +1,114 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import router from "../router";
+import menu from "../static-data/menu";
+import NavBar from "./NavBar.vue";
+
+const route = useRoute(); // Get the current route
+const isSidebarOpen = ref(false); // Sidebar hidden by default on small screens
+
+const handleButtonClick = (pageName) => {
+  if (pageName === "login") {
+    console.log("HWHWHW");
+    router.replace({ name: `${pageName}` });
+  } else {
+    router.push({ name: `${pageName}` });
+  }
+  // Close sidebar on mobile after clicking
+  if (window.innerWidth < 640) {
+    isSidebarOpen.value = false;
+  }
+};
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+
+// Ensure sidebar is open on large screens by default
+onMounted(() => {
+  if (window.innerWidth >= 640) {
+    isSidebarOpen.value = true;
+  }
+});
+</script>
+
+<template>
+  <div>
+    <!-- Hamburger Menu for Small Screens -->
+    <div class="sm:hidden">
+      <button
+        @click="toggleSidebar"
+        class="p-4 focus:outline-none"
+        aria-label="Toggle sidebar"
+      >
+        <svg
+          class="w-6 h-6 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside
+      id="logo-sidebar"
+      class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200"
+      :class="{
+        '-translate-x-full': !isSidebarOpen,
+        'translate-x-0': isSidebarOpen,
+      }"
+      style="background-color: #986b41"
+      aria-label="Sidebar"
+    >
+      <div
+        class="h-full px-3 pb-4 overflow-y-auto"
+        style="background-color: #986b41"
+      >
+        <ul class="space-y-2 font-medium">
+          <li v-for="item in menu['data']" :key="item.title">
+            <button
+              @click="handleButtonClick(item.page_name)"
+              :class="[
+                'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#B68E65] group w-full text-left',
+                { 'bg-[#B68E65]': route.name === item.page_name },
+              ]"
+            >
+              <svg
+                class="shrink-0 w-5 h-5 text-gray-300 transition duration-75 dark:group-hover:text-white"
+                :class="{ 'text-white': route.name === item.page_name }"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                :viewBox="item.viewBox"
+              >
+                <path v-for="path in item.iconPaths" :key="path" :d="path" />
+              </svg>
+              <p
+                class="flex-1 ms-3 whitespace-nowrap text-white"
+                :class="{ 'font-bold': route.name === item.page_name }"
+              >
+                {{ item.title }}
+              </p>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</template>
+
+<style scoped>
+#logo-sidebar {
+  transition: transform 0.3s ease-in-out;
+}
+</style>

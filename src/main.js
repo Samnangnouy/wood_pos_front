@@ -1,5 +1,18 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
 
-createApp(App).mount('#app')
+// Adjust path if your CSS file is elsewhere
+import "./style.css";
+
+// Import Router
+import router from "./router";
+
+// Import Store
+import store from "./store";
+
+// Import Library
+import "flowbite";
+
+const app = createApp(App);
+
+app.use(store).use(router).mount("#app");
