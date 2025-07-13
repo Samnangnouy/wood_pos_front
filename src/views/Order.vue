@@ -1,12 +1,18 @@
 <script setup>
+import NavBar from "../components/NavBar.vue";
 import SideBar from "../components/SideBar.vue";
 </script>
 
 <template>
+  <!-- Import the Sidebar -->
   <SideBar />
-  <div class="p-4 sm:ml-64" style="background-color: ">
-    <div class="p-4 mt-14">
-      <p>Order</p>
+
+  <div class="sm:ml-64">
+    <!-- Navigation Bar -->
+    <NavBar />
+
+    <div class="">
+      <P>Order</P>
     </div>
   </div>
 </template>

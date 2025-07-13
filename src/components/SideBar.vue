@@ -10,7 +10,6 @@ const isSidebarOpen = ref(false); // Sidebar hidden by default on small screens
 
 const handleButtonClick = (pageName) => {
   if (pageName === "login") {
-    console.log("HWHWHW");
     router.replace({ name: `${pageName}` });
   } else {
     router.push({ name: `${pageName}` });
@@ -43,7 +42,7 @@ onMounted(() => {
         aria-label="Toggle sidebar"
       >
         <svg
-          class="w-6 h-6 text-white"
+          class="w-6 h-6 text-[#986b41]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -62,7 +61,7 @@ onMounted(() => {
     <!-- Sidebar -->
     <aside
       id="logo-sidebar"
-      class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200"
+      class="fixed top-0 left-0 z-40 w-64 h-screen pt-4 transition-transform bg-white border-r border-gray-200"
       :class="{
         '-translate-x-full': !isSidebarOpen,
         'translate-x-0': isSidebarOpen,
@@ -74,7 +73,41 @@ onMounted(() => {
         class="h-full px-3 pb-4 overflow-y-auto"
         style="background-color: #986b41"
       >
-        <ul class="space-y-2 font-medium">
+        <!-- Close Icon -->
+        <div class="sm:hidden flex justify-end">
+          <button
+            @click="toggleSidebar"
+            class="focus:outline-none"
+            aria-label="Toggle sidebar"
+          >
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                :d="'M6 18L18 6M6 6l12 12'"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex justify-between h-14">
+          <img
+            class="w-14 h-14 rounded-full"
+            src="https://i.pinimg.com/736x/11/74/b8/1174b87fd25a959131875fdf17ee0071.jpg"
+            alt="user photo"
+          />
+          <div class="flex items-center">
+            <p class="font-bold text-white">WOOD POS SYSTEM</p>
+          </div>
+        </div>
+        <ul class="space-y-2 font-medium mt-6">
           <li v-for="item in menu['data']" :key="item.title">
             <button
               @click="handleButtonClick(item.page_name)"

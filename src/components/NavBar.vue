@@ -1,129 +1,95 @@
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
-const router = useRouter();
-const isDropdownOpen = ref(false); // Track dropdown state
-const isDropdownMenuOpen = ref(false); // Track dropdown state
+const route = useRoute();
+const isDropdownOpen = ref(false);
 
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value; // Toggle dropdown manually
+const getTitle = () => {
+  switch (route.name) {
+    case "order":
+      return "Order";
+    case "app.dashboard":
+      return "Dashboard";
+    case "productlist":
+      return "Product List";
+    default:
+      return "Dashboard";
+  }
 };
 
-const navigateTo = (pageName) => {
-  router.push({ name: pageName });
+// Toggle dropdown visibility
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+// Navigate to a route
+const navigateTo = (routeName) => {
+  route.push({ name: routeName });
   isDropdownOpen.value = false; // Close dropdown after navigation
 };
 </script>
 
 <template>
-  <nav
-    class="fixed top-0 z-50 w-full border-b border-white"
-    style="background-color: #986b41"
-  >
-    <div class="px-3 py-3 lg:px-5 lg:pl-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center justify-start rtl:justify-end">
-          <!-- Sidebar Toggle Button -->
-          <button
-            data-drawer-target="logo-sidebar"
-            data-drawer-toggle="logo-sidebar"
-            aria-controls="logo-sidebar"
-            type="button"
-            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          >
-            <span class="sr-only">Open sidebar</span>
-            <svg
-              class="w-6 h-6"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-              ></path>
-            </svg>
-          </button>
-          <div>
-            <p class="text-2xl text-white">System Logo</p>
+  <nav class="top-0 left-0 w-full bg-white shadow-md z-10">
+    <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <!-- Brand/Logo -->
+        <div class="flex-shrink-0 flex items-center">
+          <span class="text-xl font-bold text-gray-800">{{ getTitle() }}</span>
+        </div>
+        <!-- Profile Section -->
+        <div class="flex-shrink-0 flex items-center">
+          <div class="flex items-center space-x-3" @click="toggleDropdown">
+            <!-- <span class="text-gray-700 font-medium">User Profile</span> -->
+            <img
+              class="w-10 h-10 rounded-full"
+              src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+              alt="user photo"
+            />
           </div>
         </div>
-        <div class="flex items-center">
-          <div class="flex items-center ms-3">
-            <div>
-              <button
-                type="button"
-                class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                @click="toggleDropdown"
-                aria-expanded="isDropdownOpen"
-              >
-                <span class="sr-only">Open user menu</span>
-                <img
-                  class="w-8 h-8 rounded-full"
-                  src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  alt="user photo"
-                />
-              </button>
-            </div>
-            <div
-              v-show="isDropdownOpen"
-              class="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600 absolute top-12 right-4"
-            >
-              <div class="px-4 py-3" role="none">
-                <p class="text-sm text-gray-900 dark:text-white" role="none">
-                  Neil Sims
-                </p>
-                <p
-                  class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                  role="none"
-                >
-                  neil.sims@flowbite.com
-                </p>
-              </div>
-              <ul class="py-1" role="none">
-                <li>
-                  <button
-                    @click="navigateTo('dashboard')"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Dashboard
-                  </button>
-                </li>
-                <li>
-                  <button
-                    @click="navigateTo('settings')"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Settings
-                  </button>
-                </li>
-                <li>
-                  <button
-                    @click="navigateTo('earnings')"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Earnings
-                  </button>
-                </li>
-                <li>
-                  <button
-                    @click="navigateTo('login')"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Sign out
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
+      </div>
+
+      <!-- Dropdown Menu -->
+      <div
+        v-show="isDropdownOpen"
+        class="z-50 my-4 text-base list-none bg-white divide-y divide-[#EAEAEA] shadow-lg absolute top-12 right-4 px-4"
+      >
+        <div class="px-4 py-3" role="none">
+          <p class="text-md text-black font-medium" role="none">Neil Sims</p>
+          <p class="text-sm text-[#986b41] truncate" role="none">Admin</p>
         </div>
+        <ul class="py-1" role="none">
+          <li>
+            <button
+              @click="navigateTo('dashboard')"
+              class="block w-full text-left px-4 py-2 text-sm text-black hover:bg-[#986b41] dark:hover:text-white"
+              role="menuitem"
+            >
+              Profile
+            </button>
+          </li>
+          <li>
+            <button
+              @click="navigateTo('settings')"
+              class="block w-full text-left px-4 py-2 text-sm text-black hover:bg-[#986b41] dark:hover:text-white"
+              role="menuitem"
+            >
+              Notification
+            </button>
+          </li>
+
+          <li>
+            <button
+              @click="navigateTo('login')"
+              class="block w-full text-left px-4 py-2 text-sm text-black hover:bg-[#986b41] dark:hover:text-white"
+              role="menuitem"
+            >
+              Sign out
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>

@@ -6,14 +6,25 @@ import ProductList from "../views/Products/ProductList.vue";
 import store from "../store";
 
 const routes = [
-  { path: "/app", name: "app.dashboard", component: Dashboard },
-  { path: "/login", name: "login", component: Login },
-  { path: "/order", name: "order", component: Order },
-  { path: "/productlist", name: "productlist", component: ProductList },
+  {
+    path: "/app",
+    name: "app.dashboard",
+    component: Dashboard,
+    title: "Dashboard",
+  },
+  { path: "/login", name: "login", component: Login, title: "Login" },
+  { path: "/order", name: "order", component: Order, title: "Order" },
+  {
+    path: "/productlist",
+    name: "productlist",
+    component: ProductList,
+    title: "Product List",
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: Login,
+
     // component: () => import("../views/NotFound.vue"),
   },
 ];
