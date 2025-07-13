@@ -81,7 +81,14 @@ const closeModal = () => {
       class="min-h-screen lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-white"
     >
       <div class="w-full max-w-md">
-        <h2 class="text-center text-3xl font-extrabold text-gray-900">
+        <div class="flex justify-center">
+          <img
+            class="w-24 h-24 rounded-full shadow-lg"
+            src="https://i.pinimg.com/736x/11/74/b8/1174b87fd25a959131875fdf17ee0071.jpg"
+            alt="user photo"
+          />
+        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 mt-4">
           {{ "WOOD POS SYSTEM" }}
         </h2>
         <p class="text-center mt-2 mb-4">

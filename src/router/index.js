@@ -3,6 +3,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/Login.vue";
 import Order from "../views/Order.vue";
 import ProductList from "../views/Products/ProductList.vue";
+import CategoriesList from "../views/Categories/CategoriesList.vue";
 import store from "../store";
 
 const routes = [
@@ -19,6 +20,12 @@ const routes = [
     name: "productlist",
     component: ProductList,
     title: "Product List",
+  },
+  {
+    path: "/categorieslist",
+    name: "categorieslist",
+    component: CategoriesList,
+    title: "Categories List",
   },
   {
     path: "/:pathMatch(.*)*",

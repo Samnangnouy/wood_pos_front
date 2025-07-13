@@ -1,9 +1,15 @@
 import axiosClient from "../axios";
 
-export function login({ commit }, data) {
-  return axiosClient.post("/login", data).then(({ data }) => {
-    commit("setUser", data.user);
-    commit("setToken", data.token);
-    return data;
-  });
+export function getAllCategories({ commit }) {
+  console.log("Hellooooo");
+  return axiosClient
+    .get("/category/getAllCategories")
+    .then(({ data }) => {
+      console.log("fhdhfhdfhs", data);
+      commit("setGetAllCategories", data);
+    })
+    .catch(() => {
+      console.log("fhdhfhdfhsErrro", data);
+      commit("setGetAllCategories", [false]);
+    });
 }

@@ -13,6 +13,8 @@ const getTitle = () => {
       return "Dashboard";
     case "productlist":
       return "Product List";
+    case "categorieslist":
+      return "Category List";
     default:
       return "Dashboard";
   }

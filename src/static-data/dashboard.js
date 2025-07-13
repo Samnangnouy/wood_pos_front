@@ -1,7 +1,7 @@
 export default {
   dashboard_card: [
-    { id: 1, title: "ផលិតផលសរុប", value: "18", color: "#986b41" },
-    { id: 1, title: "ការបញ្ជាទិញសរុប", value: "7", color: "#8E24AA" },
-    { id: 1, title: "ប្រតិបត្តិការថ្មីៗ", value: "6", color: "#FB8C00" },
+    { id: 1, title: "Total Products", value: "18", color: "#986b41" },
+    { id: 1, title: "Total Order Products", value: "7", color: "#8E24AA" },
+    { id: 1, title: "Recently Order", value: "6", color: "#FB8C00" },
   ],
 };
