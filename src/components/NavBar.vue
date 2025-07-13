@@ -1,9 +1,23 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import store from '../store';
+import router from "../router";
 
 const route = useRoute();
 const isDropdownOpen = ref(false);
+const currentUser = computed(() => store.state.user.data );
+
+onMounted(() => {
+  store.dispatch('getUser')
+})
+
+function logout() {
+    store.dispatch('logout')
+        .then(() => {
+            router.push({name: 'login'})
+        })
+}
 
 const getTitle = () => {
   switch (route.name) {
@@ -46,7 +60,7 @@ const navigateTo = (routeName) => {
             <!-- <span class="text-gray-700 font-medium">User Profile</span> -->
             <img
               class="w-10 h-10 rounded-full"
-              src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+              :src="currentUser.image"
               alt="user photo"
             />
           </div>
@@ -59,8 +73,8 @@ const navigateTo = (routeName) => {
         class="z-50 my-4 text-base list-none bg-white divide-y divide-[#EAEAEA] shadow-lg absolute top-12 right-4 px-4"
       >
         <div class="px-4 py-3" role="none">
-          <p class="text-md text-black font-medium" role="none">Neil Sims</p>
-          <p class="text-sm text-[#986b41] truncate" role="none">Admin</p>
+          <p class="text-md text-black font-medium" role="none">{{ currentUser.full_name }}</p>
+          <p class="text-sm text-[#986b41] truncate" role="none">{{ currentUser.role }}</p>
         </div>
         <ul class="py-1" role="none">
           <li>
@@ -84,7 +98,7 @@ const navigateTo = (routeName) => {
 
           <li>
             <button
-              @click="navigateTo('login')"
+              @click="logout"
               class="block w-full text-left px-4 py-2 text-sm text-black hover:bg-[#986b41] dark:hover:text-white"
               role="menuitem"
             >

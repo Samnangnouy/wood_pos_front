@@ -1,11 +1,12 @@
-export function setGetAllCategories(state, [loading, data = null]) {
-  console.log("sdnfndnfdnfdfdf");
-  if (data) {
-    state.categories = {
-      ...state.categories,
-      data: data.data,
-    };
-  }
+export function setUser(state, user) {
+  state.user.data = user;
+}
 
-  state.categories.loading = loading;
+export function setToken(state, token) {
+  state.user.token = token;
+  if (token) {
+    sessionStorage.setItem('TOKEN', token);
+  } else {
+    sessionStorage.removeItem('TOKEN')
+  }
 }

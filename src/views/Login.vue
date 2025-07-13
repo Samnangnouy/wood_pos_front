@@ -22,26 +22,22 @@ const errorMsg = ref("");
 const isOpen = ref(false);
 
 const user = {
-  email: "",
-  password: "",
-  remember: false,
-};
+  username: 'samnang',
+  password: 'samnang168',
+}
 
-const login = async () => {
-  router.replace({ name: "app.dashboard" });
-  // loading.value = true;
-  // try {
-  //   await store.dispatch("login", user);
-  //   loading.value = false;
-  //   router.push({ name: "app.dashboard" });
-  // } catch ({ response }) {
-  //   loading.value = false;
-  //   errorMsg.value =
-  //     response?.data?.message ||
-  //     "Login failed, please check your information again.";
-  //   isOpen.value = true;
-  // }
-};
+function login() {
+  loading.value = true;
+  store.dispatch('login', user)
+    .then(() => {
+      loading.value = false;
+      router.push({ name: 'app.dashboard' })
+    })
+    .catch(({ response }) => {
+      loading.value = false;
+      errorMsg.value = response.data.message;
+    })
+}
 
 const closeModal = () => {
   isOpen.value = false;
@@ -101,10 +97,10 @@ const closeModal = () => {
             <input
               id="email-address"
               name="email"
-              type="email"
+              type="string"
               autocomplete="email"
               required
-              v-model="user.email"
+              v-model="user.username"
               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Email address"
             />
