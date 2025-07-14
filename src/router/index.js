@@ -4,6 +4,7 @@ import Login from "../views/Login.vue";
 import Order from "../views/Order.vue";
 import ProductList from "../views/Products/ProductList.vue";
 import CategoriesList from "../views/Categories/CategoriesList.vue";
+import Users from "../views/Settings/User.vue";
 import store from "../store";
 
 const routes = [
@@ -12,26 +13,27 @@ const routes = [
     name: "app.dashboard",
     component: Dashboard,
     title: "Dashboard",
-        meta: {
-      requiresAuth: true
+    meta: {
+      requiresAuth: true,
     },
   },
-  { path: "/login",
-    name: "login", 
-    component: Login, 
+  {
+    path: "/login",
+    name: "login",
+    component: Login,
     title: "Login",
     meta: {
-      requiresGuest: true
-    }
-   },
+      requiresGuest: true,
+    },
+  },
   { path: "/order", name: "order", component: Order, title: "Order" },
   {
     path: "/productlist",
     name: "productlist",
     component: ProductList,
     title: "Product List",
-        meta: {
-      requiresAuth: true
+    meta: {
+      requiresAuth: true,
     },
   },
   {
@@ -39,8 +41,17 @@ const routes = [
     name: "categorieslist",
     component: CategoriesList,
     title: "Categories List",
-        meta: {
-      requiresAuth: true
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/user",
+    name: "user",
+    component: Users,
+    title: "Users",
+    meta: {
+      requiresAuth: true,
     },
   },
   {
@@ -60,13 +71,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log(to);
   if (to.meta.requiresAuth && !store.state.user.token) {
-    next({name: 'login'})
+    next({ name: "login" });
   } else if (to.meta.requiresGuest && store.state.user.token) {
-    next({name: 'app.dashboard'})
+    next({ name: "app.dashboard" });
   } else {
     next();
   }
-
-})
+});
 
 export default router;

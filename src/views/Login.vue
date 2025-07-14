@@ -22,21 +22,22 @@ const errorMsg = ref("");
 const isOpen = ref(false);
 
 const user = {
-  username: 'samnang',
-  password: 'samnang168',
-}
+  username: "",
+  password: "",
+};
 
 function login() {
   loading.value = true;
-  store.dispatch('login', user)
+  store
+    .dispatch("login", user)
     .then(() => {
       loading.value = false;
-      router.push({ name: 'app.dashboard' })
+      router.push({ name: "app.dashboard" });
     })
     .catch(({ response }) => {
       loading.value = false;
       errorMsg.value = response.data.message;
-    })
+    });
 }
 
 const closeModal = () => {
@@ -142,7 +143,7 @@ const closeModal = () => {
             <button
               type="submit"
               :disabled="loading"
-              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#986b41] hover:bg-[#B68E65] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:hover:bg-indigo-500"
+              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#986b41] hover:bg-[#B68E65] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed"
             >
               <svg
                 v-if="loading"

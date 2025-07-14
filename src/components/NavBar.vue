@@ -1,22 +1,21 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import store from '../store';
+import store from "../store";
 import router from "../router";
 
 const route = useRoute();
 const isDropdownOpen = ref(false);
-const currentUser = computed(() => store.state.user.data );
+const currentUser = computed(() => store.state.user.data);
 
 onMounted(() => {
-  store.dispatch('getUser')
-})
+  store.dispatch("getUser");
+});
 
 function logout() {
-    store.dispatch('logout')
-        .then(() => {
-            router.push({name: 'login'})
-        })
+  store.dispatch("logout").then(() => {
+    router.push({ name: "login" });
+  });
 }
 
 const getTitle = () => {
@@ -29,6 +28,8 @@ const getTitle = () => {
       return "Product List";
     case "categorieslist":
       return "Category List";
+    case "user":
+      return "Users";
     default:
       return "Dashboard";
   }
@@ -73,8 +74,12 @@ const navigateTo = (routeName) => {
         class="z-50 my-4 text-base list-none bg-white divide-y divide-[#EAEAEA] shadow-lg absolute top-12 right-4 px-4"
       >
         <div class="px-4 py-3" role="none">
-          <p class="text-md text-black font-medium" role="none">{{ currentUser.full_name }}</p>
-          <p class="text-sm text-[#986b41] truncate" role="none">{{ currentUser.role }}</p>
+          <p class="text-md text-black font-medium" role="none">
+            {{ currentUser.full_name }}
+          </p>
+          <p class="text-sm text-[#986b41] truncate" role="none">
+            {{ currentUser.role }}
+          </p>
         </div>
         <ul class="py-1" role="none">
           <li>
