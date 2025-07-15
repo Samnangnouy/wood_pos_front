@@ -7,7 +7,7 @@ import store from "../../store";
 import { onUnmounted } from "vue";
 
 const isModalOpen = ref(false); // Control modal visibility
-const isUpdate = ref(false); // Control modal visibility
+const isUpdate = ref(false); // Control For Update
 const newCategoryName = ref(""); // Store new category name
 const isMenuOpen = ref(false);
 const activeMenuId = ref(null);
@@ -252,6 +252,7 @@ onUnmounted(() => {
               v-for="category in listCategory"
               :key="listCategory.name"
               class="bg-white border-b border-gray-200 hover:bg-[#EAEAEA]"
+              @click="handleEdit(category)"
             >
               <th
                 scope="row"

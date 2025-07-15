@@ -3,16 +3,28 @@ import { ref, onMounted, onUnmounted } from "vue";
 import NavBar from "../../components/NavBar.vue";
 import SideBar from "../../components/SideBar.vue";
 import store from "../../store";
+import DialogConfirm from "../../components/DialogConfirm.vue";
+import ProductView from "./ProductView.vue";
 
-// Reactive state to manage dropdown visibility
-const isModalOpen = ref(false); // Control modal visibility
+// Data Boolean
+const isModalOpen = ref(false);
 const isMenuOpen = ref(false);
+const isLoadingProduct = ref(false);
+const isUpdate = ref(false);
+const isDialogOpen = ref(false);
+const isViewProduct = ref(false);
+
+// Data Null
 const activeMenuId = ref(null);
-const tableContainer = ref(null); // Ref for the table container
+const tableContainer = ref(null);
 const imagePreview = ref(null);
+const productDeleteId = ref(null);
+
+// Data Array
 const listProduct = ref([]);
 const listCategory = ref([]);
-const isUpdate = ref(false);
+
+// Data Object
 const formData = ref({
   image: null,
   name: "",
@@ -25,6 +37,7 @@ const formData = ref({
   updated_by: "admin",
 });
 const errors = ref({}); // Store validation errors
+const productItem = ref({});
 
 onMounted(() => {
   getAllProducts();
@@ -58,10 +71,15 @@ const submitCategory = async () => {
 };
 
 const getAllProducts = async (url = null) => {
+  isLoadingProduct.value = true;
   try {
     const res = await store.dispatch("getAllProducts", { url });
     listProduct.value = res;
-  } catch (error) {}
+    isLoadingProduct.value = false;
+  } catch (error) {
+    isLoadingProduct.value = false;
+    console.log("Get All Product Error", error);
+  }
 };
 
 const getAllCategories = async (url = null) => {
@@ -91,6 +109,7 @@ const openModal = () => {
 
 const closeModal = () => {
   isModalOpen.value = false;
+  isUpdate.value = false;
   formData.value = {
     image: null,
     name: "",
@@ -125,17 +144,69 @@ const toggleMenu = (productId) => {
 };
 
 // Handle Edit action
-const handleEdit = (productId) => {
-  console.log(`Edit order: ${productId}`);
+const handleEdit = (product) => {
+  imagePreview.value = product?.image;
+  formData.value = {
+    id: product?._id,
+    image: product?.image,
+    name: product?.name,
+    description: product?.description,
+    category_id: product?.category_id,
+    price: product?.price,
+    cost: product?.cost,
+    status: "true",
+    created_by: "admin",
+    updated_by: "admin",
+  };
+  isUpdate.value = true;
+  isModalOpen.value = true;
+
   // Add your edit logic here
   closeMenu();
 };
 
+const handleUpdate = async () => {
+  try {
+    await store.dispatch("updateProduct", formData.value);
+    getAllProducts();
+    closeModal();
+  } catch (error) {
+    console.log("Error Update Product", error);
+  }
+};
+
 // Handle Delete action
-const handleDelete = (productId) => {
-  console.log(`Delete order: ${productId}`);
-  // Add your delete logic here
+const handleDelete = async (productId) => {
+  productDeleteId.value = productId;
+  isDialogOpen.value = true;
   closeMenu();
+};
+
+const onViewProduct = (product) => {
+  productItem.value = product;
+  isViewProduct.value = true;
+};
+
+const onCloseViewProduct = () => {
+  productItem.value = {};
+  isViewProduct.value = false;
+};
+
+const confirmModalDialog = async () => {
+  try {
+    await store.dispatch("deleteProduct", productDeleteId.value);
+    getAllProducts();
+    productDeleteId.value = null;
+    isDialogOpen.value = false;
+  } catch (error) {
+    alert("Delete Product Fail");
+    console.log("Error Delete Product", error);
+  }
+};
+
+const closeModalDialog = () => {
+  productDeleteId.value = null;
+  isDialogOpen.value = false;
 };
 
 // Close menu
@@ -241,11 +312,11 @@ onUnmounted(() => {
                   ]"
                 />
                 <!-- Image Preview -->
-                <div v-if="imagePreview" class="mt-2">
+                <div v-if="imagePreview" class="mt-1">
                   <img
                     :src="imagePreview"
                     alt="Image Preview"
-                    class="max-w-full h-auto rounded-lg"
+                    class="w-full h-auto rounded-lg max-h-64 object-cover"
                     style="max-height: 200px"
                   />
                 </div>
@@ -427,11 +498,47 @@ onUnmounted(() => {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <!-- Skeleton List -->
+          <tbody v-if="listProduct?.length == 0 || isLoadingProduct">
+            <tr
+              v-for="product in [{}, {}, {}]"
+              class="bg-white border-b border-gray-200 hover:bg-[#EAEAEA]"
+            >
+              <th
+                scope="row"
+                class="px-6 py-4 font-light text-black whitespace-nowrap"
+              >
+                <div class="flex">
+                  <div
+                    class="w-15 h-15 bg-gray-200 object-cover rounded-md"
+                  ></div>
+
+                  <div class="ml-4">
+                    <div class="h-2 bg-gray-200 rounded-full w-16 mt-1"></div>
+                    <div class="h-2 bg-gray-200 rounded-full w-16 mt-4"></div>
+                  </div>
+                </div>
+              </th>
+              <!-- <td class="px-6 py-4 text-gray-500">{{ product.name }}</td> -->
+              <td class="px-6 py-4 text-gray-500">
+                <div class="h-2 bg-gray-200 rounded-full w-12"></div>
+              </td>
+              <td class="px-6 py-4 text-gray-500">
+                <div class="h-2 bg-gray-200 rounded-full w-12"></div>
+              </td>
+              <td class="px-6 py-4 text-gray-500">
+                <div class="h-2 bg-gray-200 rounded-full w-12"></div>
+              </td>
+              <td class="px-6 py-4 text-right relative"></td>
+            </tr>
+          </tbody>
+          <!-- Product Item List -->
+          <tbody v-else>
             <tr
               v-for="product in listProduct"
               :key="product._id"
               class="bg-white border-b border-gray-200 hover:bg-[#EAEAEA]"
+              @click="onViewProduct(product)"
             >
               <th
                 scope="row"
@@ -445,16 +552,24 @@ onUnmounted(() => {
                   />
                   <div class="ml-2 grid grid-cols-[70px_1fr] gap-x-2">
                     <p class="text-gray-500">Name:</p>
+
                     <p class="">{{ product.name }}</p>
                     <p class="text-gray-500">Category:</p>
+
                     <p class="">{{ product.category.name }}</p>
                   </div>
                 </div>
               </th>
               <!-- <td class="px-6 py-4 text-gray-500">{{ product.name }}</td> -->
-              <td class="px-6 py-4 text-gray-500">${{ product.cost }}</td>
-              <td class="px-6 py-4 text-gray-500">${{ product.price }}</td>
-              <td class="px-6 py-4 text-gray-500">{{ 0 }}</td>
+              <td class="px-6 py-4 text-gray-500">
+                <p>${{ product.cost }}</p>
+              </td>
+              <td class="px-6 py-4 text-gray-500">
+                <p>${{ product.price }}</p>
+              </td>
+              <td class="px-6 py-4 text-gray-500">
+                <p>{{ 0 }}</p>
+              </td>
               <td class="px-6 py-4 text-right relative">
                 <!-- Menu Icon -->
                 <button
@@ -484,16 +599,45 @@ onUnmounted(() => {
                 >
                   <div class="py-1">
                     <button
-                      @click="handleEdit(product._id)"
-                      class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      @click="handleEdit(product)"
+                      class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      Edit
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="#374151"
+                        class="size-4.5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                        />
+                      </svg>
+
+                      <p class="ml-2">Edit</p>
                     </button>
                     <button
                       @click="handleDelete(product._id)"
-                      class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      class="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                     >
-                      Delete
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="#DC2626"
+                        class="size-4.5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                      <p class="ml-2">Delete</p>
                     </button>
                   </div>
                 </div>
@@ -502,6 +646,23 @@ onUnmounted(() => {
           </tbody>
         </table>
       </div>
+
+      <!-- Delete Dialog -->
+      <DialogConfirm
+        :textTitle="'Delete Product'"
+        :textDesc="'Are you sure you want to delete product?'"
+        :confirmModal="confirmModalDialog"
+        :closeModal="closeModalDialog"
+        :isOpen="isDialogOpen"
+        :isDelete="true"
+      />
+
+      <!-- View Product -->
+      <ProductView
+        :isModalOpen="isViewProduct"
+        :productItem="productItem"
+        :onCloseModal="onCloseViewProduct"
+      />
     </div>
   </div>
 </template>

@@ -8,11 +8,16 @@ export function getUser({ commit }, data) {
 }
 
 export function login({ commit }, data) {
-  return axiosClient.post("/auth/login", data).then(({ data }) => {
-    commit("setUser", data.user);
-    commit("setToken", data.token);
-    return data;
-  });
+  return axiosClient
+    .post("/auth/login", data)
+    .then(({ data }) => {
+      commit("setUser", data.user);
+      commit("setToken", data.token);
+      return data;
+    })
+    .catch((error) => {
+      return error;
+    });
 }
 
 export function logout({ commit }) {
@@ -52,6 +57,38 @@ export function createProduct({ commit }, product) {
     })
     .catch(() => {
       console.log("Create Product Fail", data);
+    });
+}
+
+export function updateProduct({ commit }, product) {
+  const form = new FormData();
+  form.append("image", product.image);
+  form.append("name", product.name);
+  form.append("description", product.description);
+  form.append("category_id", product.category_id);
+  form.append("price", product.price);
+  form.append("cost", product.cost);
+  form.append("status", product.status);
+  form.append("created_by", product.created_by);
+  form.append("updated_by", product.updated_by);
+  return axiosClient
+    .put(`/product/update/${product.id}`, form)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Update Product Fail", data);
+    });
+}
+
+export function deleteProduct({ commit }, productId) {
+  return axiosClient
+    .delete(`/product/delete/${productId}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Delete Product Fail", data);
     });
 }
 

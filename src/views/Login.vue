@@ -102,7 +102,7 @@ const closeModal = () => {
               autocomplete="email"
               required
               v-model="user.username"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:border-[#986b41] sm:text-sm"
               placeholder="Email address"
             />
           </div>
@@ -117,7 +117,7 @@ const closeModal = () => {
               autocomplete="current-password"
               required
               v-model="user.password"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:border-[#986b41] sm:text-sm"
               placeholder="Password"
             />
           </div>
