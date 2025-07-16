@@ -5,6 +5,8 @@ import SideBar from "../../components/SideBar.vue";
 import { onMounted } from "vue";
 import store from "../../store";
 import { onUnmounted } from "vue";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const isModalOpen = ref(false); // Control modal visibility
 const isUpdate = ref(false); // Control For Update
@@ -44,9 +46,11 @@ const submitCategory = async () => {
       await store.dispatch("createCategory", obj);
       getAllCategories();
       closeModal();
+      toast.success("Category created successfully!");
     } catch (error) {
       closeModal();
       console.log("Error=>", error);
+      toast.error("Category create unsuccessfully!");
     }
   }
 };
@@ -70,8 +74,10 @@ const handleUpdate = async () => {
     await store.dispatch("updateCategory", obj);
     getAllCategories();
     closeModal();
+    toast.success("Category updated successfully!");
   } catch (error) {
     console.log("Error=>", error);
+    toast.error("Category update unsuccessfully!");
   }
 };
 
@@ -81,8 +87,10 @@ const handleDelete = async (categoryId) => {
     await store.dispatch("deleteCategory", categoryId);
     getAllCategories();
     closeMenu();
+    toast.success("Category deleted successfully!");
   } catch (error) {
     closeMenu();
+    toast.error("Category delete unsuccessfully!");
   }
 };
 
@@ -135,6 +143,7 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("click", handleOutsideClick);
 });
+
 </script>
 
 <template>
@@ -240,8 +249,9 @@ onUnmounted(() => {
             class="text-xs text-black uppercase bg-white border-b border-[#EAEAEA]"
           >
             <tr>
-              <th scope="col" class="px-6 py-3">Category ID</th>
-              <th scope="col" class="px-6 py-3">Category Name</th>
+              <th scope="col" class="px-6 py-3">No</th>
+              <th scope="col" class="px-6 py-3">Name</th>
+              <th scope="col" class="px-6 py-3">Description</th>
               <th scope="col" class="px-6 py-3 text-right">
                 <p>Actions</p>
               </th>
@@ -249,21 +259,17 @@ onUnmounted(() => {
           </thead>
           <tbody>
             <tr
-              v-for="category in listCategory"
-              :key="listCategory.name"
+              v-for="(category, index) in listCategory" :key="category.name"
               class="bg-white border-b border-gray-200 hover:bg-[#EAEAEA]"
               @click="handleEdit(category)"
             >
-              <th
-                scope="row"
-                class="px-6 py-4 font-light text-black whitespace-nowrap"
-              >
+              <td class="px-6 py-4 text-gray-500">
                 <div
                   v-if="isLoadingCategory"
-                  class="h-2 bg-gray-200 rounded-full w-16"
+                  class="h-2 bg-gray-200 rounded-full w-6"
                 ></div>
-                <p v-else>{{ category._id }}</p>
-              </th>
+                <p v-else>{{ String(index + 1).padStart(2, '0') }}</p>
+              </td>
 
               <td class="px-6 py-4 text-gray-500">
                 <div
@@ -272,6 +278,15 @@ onUnmounted(() => {
                 ></div>
                 <p v-else>{{ category.name }}</p>
               </td>
+
+              <td class="px-6 py-4 text-gray-500">
+                <div
+                  v-if="isLoadingCategory"
+                  class="h-2 bg-gray-200 rounded-full w-28"
+                ></div>
+                <p v-else>{{ category.description }}</p>
+              </td>
+
 
               <td class="px-6 py-4 text-right relative">
                 <!-- Menu Icon -->
