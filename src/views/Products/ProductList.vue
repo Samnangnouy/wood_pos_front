@@ -39,9 +39,12 @@ const formData = ref({
 const errors = ref({}); // Store validation errors
 const productItem = ref({});
 
-onMounted(() => {
-  getAllProducts();
-  getAllCategories();
+onMounted(async () => {
+  try {
+    await Promise.all([getAllProducts(), getAllCategories()]);
+  } catch (error) {
+    console.error("Error during initialization:", error);
+  }
 });
 
 const validateForm = () => {
@@ -58,9 +61,7 @@ const validateForm = () => {
 const submitCategory = async () => {
   if (!validateForm()) return;
   try {
-    console.log("formData", formData.value);
     const res = await store.dispatch("createProduct", formData.value);
-    console.log("res", res);
     if (res) {
       getAllProducts();
       closeModal();
@@ -240,7 +241,7 @@ onUnmounted(() => {
     <NavBar />
 
     <div class="p-4 rounded-lg">
-      <!-- Add Category Button -->
+      <!-- Add Product Button -->
       <div class="mb-4">
         <button
           @click="openModal"

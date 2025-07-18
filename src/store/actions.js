@@ -27,6 +27,17 @@ export function logout({ commit }) {
   });
 }
 
+export function getAllUsers() {
+  return axiosClient
+    .get("/user/getAllUsers")
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Get All Products Fail", data);
+    });
+}
+
 export function getAllProducts({ commit }) {
   return axiosClient
     .get("/product/getAllProducts")
@@ -35,6 +46,35 @@ export function getAllProducts({ commit }) {
     })
     .catch(() => {
       console.log("Get All Products Fail", data);
+    });
+}
+
+export function createUser({ commit }, user) {
+  const form = new FormData();
+  form.append("image", user.image);
+  form.append("full_name", user.full_name);
+  form.append("username", user.username);
+  form.append("password", user.password);
+  form.append("role", user.role);
+  user = form;
+  return axiosClient
+    .post("/user/create", user)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Create User Fail", data);
+    });
+}
+
+export function deleteUser({ commit }, userId) {
+  return axiosClient
+    .delete(`/user/delete/${userId}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Delete Product Fail", data);
     });
 }
 

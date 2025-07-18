@@ -5,11 +5,12 @@ import SideBar from "../../components/SideBar.vue";
 import { onMounted } from "vue";
 import store from "../../store";
 import { onUnmounted } from "vue";
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const isModalOpen = ref(false); // Control modal visibility
 const isUpdate = ref(false); // Control For Update
+const isErrorValue = ref(false);
 const newCategoryName = ref(""); // Store new category name
 const isMenuOpen = ref(false);
 const activeMenuId = ref(null);
@@ -18,8 +19,12 @@ const isLoadingCategory = ref(false);
 const listCategory = ref([]);
 const objEdit = ref(null);
 
-onMounted(() => {
-  getAllCategories();
+onMounted(async () => {
+  try {
+    await Promise.all([getAllCategories()]);
+  } catch (error) {
+    console.error("Error during initialization:", error);
+  }
 });
 
 const getAllCategories = async (url = null) => {
@@ -37,7 +42,7 @@ const getAllCategories = async (url = null) => {
 };
 
 const submitCategory = async () => {
-  if (newCategoryName.value.trim()) {
+  if (newCategoryName.value === "") {
     try {
       const obj = {
         name: newCategoryName.value,
@@ -52,6 +57,8 @@ const submitCategory = async () => {
       console.log("Error=>", error);
       toast.error("Category create unsuccessfully!");
     }
+  } else {
+    isErrorValue.value = true;
   }
 };
 
@@ -87,7 +94,7 @@ const handleDelete = async (categoryId) => {
     await store.dispatch("deleteCategory", categoryId);
     getAllCategories();
     closeMenu();
-    toast.success("Category deleted successfully!");
+    toast.info("Category deleted successfully!");
   } catch (error) {
     closeMenu();
     toast.error("Category delete unsuccessfully!");
@@ -143,7 +150,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("click", handleOutsideClick);
 });
-
 </script>
 
 <template>
@@ -259,7 +265,8 @@ onUnmounted(() => {
           </thead>
           <tbody>
             <tr
-              v-for="(category, index) in listCategory" :key="category.name"
+              v-for="(category, index) in listCategory"
+              :key="category.name"
               class="bg-white border-b border-gray-200 hover:bg-[#EAEAEA]"
               @click="handleEdit(category)"
             >
@@ -268,7 +275,7 @@ onUnmounted(() => {
                   v-if="isLoadingCategory"
                   class="h-2 bg-gray-200 rounded-full w-6"
                 ></div>
-                <p v-else>{{ String(index + 1).padStart(2, '0') }}</p>
+                <p v-else>{{ String(index + 1).padStart(2, "0") }}</p>
               </td>
 
               <td class="px-6 py-4 text-gray-500">
@@ -286,7 +293,6 @@ onUnmounted(() => {
                 ></div>
                 <p v-else>{{ category.description }}</p>
               </td>
-
 
               <td class="px-6 py-4 text-right relative">
                 <!-- Menu Icon -->
