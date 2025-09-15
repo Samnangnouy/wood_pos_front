@@ -1,82 +1,96 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Dashboard from "../views/Dashboard.vue";
+import {createRouter, createWebHistory} from "vue-router";
+import AppLayout from '../components/AppLayout.vue'
 import Login from "../views/Login.vue";
-import Order from "../views/Order.vue";
-import ProductList from "../views/Products/ProductList.vue";
-import CategoriesList from "../views/Categories/CategoriesList.vue";
-import Users from "../views/Settings/User.vue";
+import Dashboard from "../views/Dashboard.vue";
+import RequestPassword from "../views/RequestPassword.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 import store from "../store";
+import Products from "../views/Products/Products.vue";
+import NotFound from "../views/NotFound.vue";
+import Categories from "../views/Categories/Categories.vue";
+import Users from "../views/Users/Users.vue";
 
 const routes = [
   {
-    path: "/dashboard",
-    name: "app.dashboard",
-    component: Dashboard,
-    title: "Dashboard",
-    meta: {
-      requiresAuth: true,
-    },
+    path: '/',
+    redirect: '/app/dashboard'
   },
   {
-    path: "/login",
-    name: "login",
+    path: '/app',
+    name: 'app',
+    component: AppLayout,
+    meta: {
+      requiresAuth: true
+    },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'app.dashboard',
+        component: Dashboard
+      },
+      {
+        path: 'products',
+        name: 'app.products',
+        component: Products
+      },
+      {
+        path: 'categories',
+        name: 'app.categories',
+        component: Categories
+      },
+      {
+        path: 'users',
+        name: 'app.users',
+        component: Users
+      }
+    ]
+  },
+  {
+    path: '/login',
+    name: 'login',
     component: Login,
-    title: "Login",
     meta: {
-      requiresGuest: true,
-    },
-  },
-  { path: "/order", name: "order", component: Order, title: "Order" },
-  {
-    path: "/productlist",
-    name: "productlist",
-    component: ProductList,
-    title: "Product List",
-    meta: {
-      requiresAuth: true,
-    },
+      requiresGuest: true
+    }
   },
   {
-    path: "/categorieslist",
-    name: "categorieslist",
-    component: CategoriesList,
-    title: "Categories List",
+    path: '/request-password',
+    name: 'requestPassword',
+    component: RequestPassword,
     meta: {
-      requiresAuth: true,
-    },
+      requiresGuest: true
+    }
   },
   {
-    path: "/user",
-    name: "user",
-    component: Users,
-    title: "Users",
+    path: '/reset-password/:token',
+    name: 'resetPassword',
+    component: ResetPassword,
     meta: {
-      requiresAuth: true,
-    },
+      requiresGuest: true
+    }
   },
   {
-    path: "/:pathMatch(.*)*",
-    name: "NotFound",
-    component: Login,
-
-    // component: () => import("../views/NotFound.vue"),
-  },
+    path: '/:pathMatch(.*)',
+    name: 'notfound',
+    component: NotFound,
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
 router.beforeEach((to, from, next) => {
   console.log(to);
   if (to.meta.requiresAuth && !store.state.user.token) {
-    next({ name: "login" });
+    next({name: 'login'})
   } else if (to.meta.requiresGuest && store.state.user.token) {
-    next({ name: "app.dashboard" });
+    next({name: 'app.dashboard'})
   } else {
     next();
   }
-});
+
+})
 
 export default router;

@@ -22,8 +22,8 @@ const errorMsg = ref("");
 const isOpen = ref(false);
 
 const user = {
-  username: "",
-  password: "",
+  username: "samnang",
+  password: "samnang168",
 };
 
 function login() {
